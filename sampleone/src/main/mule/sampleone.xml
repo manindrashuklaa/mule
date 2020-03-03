@@ -31,7 +31,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		</http:listener>
 		<logger level="INFO" doc:name="Logger" doc:id="6f88f222-bfc5-428e-b293-9ac11af89913" message="--------------GOING TO GET -- EMPLOYEE -- DATA-----------"/>
 		<http:request method="GET" doc:name="Request" doc:id="527277b8-87b2-4658-81da-720e2befaa5f" config-ref="HTTP_Request_configuration" path="/employees"/>
-		<logger level="INFO" doc:name="Logger" doc:id="11154cd6-466c-4517-8594-fc3a98d64a1c" message='"-------------- EMPLOYEE -- DATA-----------"++ #[payload]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="11154cd6-466c-4517-8594-fc3a98d64a1c" message='"-------------- EMPLOYEE -- DATA----###-------"++ #[payload]'/>
 		<ee:transform doc:name="Transform Message" doc:id="666dd98a-acdc-46e7-ae69-9d85eddd3fa3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
