@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f8a6034c-79d2-420a-a404-4a1f6d575df6" basePath="/api" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="a260e916-718d-4623-92d7-5262ab495309" basePath="/api/v1" >
+		<http:request-connection host="dummy.restapiexample.com" />
+	</http:request-config>
+	<flow name="sampleoneFlow" doc:id="3ad2fa70-271e-41eb-b1a8-6b6655dddef4" >
+		<http:listener doc:name="Listener" doc:id="1949bea1-02c4-4a0a-aee1-a0e8b44f1d2e" config-ref="HTTP_Listener_config" path="/getedetails" outputMimeType="application/json" allowedMethods="GET">
+			<http:response statusCode="200" reasonPhrase="success" />
+			<http:error-response statusCode="500" reasonPhrase="Error" >
+				<http:body ><![CDATA[#[output application/json
+ --- 
+ 
+ {
+ 	Error: "Custom Error Message : Error While calling provided API. Please try after some time !",
+ 	ErrorMessage: error.errorMessage,
+ 	Description: error.description,
+ 	DetailedDescription: error.detailedDescription,
+ 	ChildErrors:error.childErrors,
+ 	ErrorType:error.errorType,
+ 	Cause: error.cause
+ }]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="6f88f222-bfc5-428e-b293-9ac11af89913" message="--------------GOING TO GET -- EMPLOYEE -- DATA-----------"/>
+		<http:request method="GET" doc:name="Request" doc:id="527277b8-87b2-4658-81da-720e2befaa5f" config-ref="HTTP_Request_configuration" path="/employees"/>
+		<logger level="INFO" doc:name="Logger" doc:id="11154cd6-466c-4517-8594-fc3a98d64a1c" message='"-------------- EMPLOYEE -- DATA-----------"++ #[payload]'/>
+		<ee:transform doc:name="Transform Message" doc:id="666dd98a-acdc-46e7-ae69-9d85eddd3fa3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	Response: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
